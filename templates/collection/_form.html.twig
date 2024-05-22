@@ -1,0 +1,24 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.imageUrl) }}
+    {{ form_row(form.user) }}
+    {{ form_row(form.category) }}
+
+<p>Custom Attributes</p>
+<div
+        id="custom-attributes-wrapper"
+        data-index="{{ form.customAttributes|length > 0 ? form.customAttributes|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ form_widget(form.customAttributes.vars.prototype)|e('html_attr') }}"
+>
+    {% for customAttribute in form.customAttributes %}
+        <div class="item">
+            {{ form_row(customAttribute) }}
+        </div>
+    {% endfor %}
+</div>
+<a href="#" class="add-custom-attribute">Add Attribute</a>
+{{ form_rest(form) }}
+<button class="btn btn-primary" formnovalidate>{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

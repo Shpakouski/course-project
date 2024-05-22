@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Enum\CustomAttributeType;
 use App\Repository\CustomAttributeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomAttributeRepository::class)]
 class CustomAttribute
@@ -14,10 +16,13 @@ class CustomAttribute
     private ?int $id = null;
 
     #[ORM\Column(length: 80)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $type = null;
+    #[Assert\NotNull]
+    #[Assert\Type(type: CustomAttributeType::class)]
+    private ?CustomAttributeType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'customAttributes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -40,12 +45,12 @@ class CustomAttribute
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?CustomAttributeType
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(CustomAttributeType $type): static
     {
         $this->type = $type;
 
