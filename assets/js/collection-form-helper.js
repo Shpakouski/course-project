@@ -37,9 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .querySelectorAll('#custom-attributes-wrapper div.item')
         .forEach(el => {
-            el.addEventListener("click", (e) => {
-                e.preventDefault();
                 addRemoveAttributeButton(el);
-            })
         });
 });
