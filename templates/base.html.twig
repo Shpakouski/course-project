@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html{% block html_class %}{% endblock %}>
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -11,13 +11,9 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body{% block body_class %}{% endblock %}>
         <div class="container-fluid">
-            <div class="flash-messages">
-                {% for message in app.flashes('success') %}
-                    <div class="alert-success">{{ message }}</div>
-                {% endfor %}
-            </div>
+            {% include 'main/_flash_message.html.twig' %}
             {% block body %}{% endblock %}
         </div>
     </body>
