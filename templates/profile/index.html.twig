@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block html_class %} class="h-100"{% endblock %}
+{% block title %}Profile{% endblock %}
+{% block body_class %} class="d-flex align-items-center py-4 bg-body-tertiary h-100"{% endblock %}
+
+{% block body %}
+    <div class="col-12 col-md-8 py-md-3 ps-0 pe-md-5 col-xl-5 h-100 m-auto">
+        <h2>Your Collections ✅</h2>
+        {% for collection in app.user.itemCollections %}
+            <p>{{ collection.name }}</p>
+            <p>{{ collection.description }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
