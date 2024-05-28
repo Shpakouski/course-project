@@ -5,16 +5,20 @@
 {% block body %}
     <h1>Items</h1>
 
+    <div class="count">
+        {{ pagination.getTotalItemCount }}
+    </div>
+
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'a.id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Name', 'a.name') }}</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in items %}
+            {% for item in pagination %}
                 <tr>
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
@@ -32,4 +36,8 @@
     </table>
 
     <a href="{{ path('app_item_new',{'user': user.id, 'collection': collection.id}) }}">Create new</a>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 {% endblock %}

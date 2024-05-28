@@ -16,6 +16,18 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
+    public function findByUserAndCollection($userId, $collectionId)
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.itemCollection', 'c')
+            ->innerJoin('c.user', 'u')
+            ->where('u.id = :userId')
+            ->andWhere('c.id = :collectionId')
+            ->setParameter('userId', $userId)
+            ->setParameter('collectionId', $collectionId)
+            ->getQuery();
+    }
+
     //    /**
     //     * @return Item[] Returns an array of Item objects
     //     */

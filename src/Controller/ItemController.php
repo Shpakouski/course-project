@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\ItemType;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +18,22 @@ use Symfony\Component\Routing\Attribute\Route;
 class ItemController extends AbstractController
 {
     #[Route('/items', name: 'app_item_index', methods: ['GET'])]
-    public function index(ItemRepository $itemRepository, User $user, ItemCollection $collection): Response
+    public function index(ItemRepository $itemRepository, User $user, ItemCollection $collection, Request $request, PaginatorInterface $paginator): Response
     {
+
+        $query = $itemRepository->findByUserAndCollection($user, $collection);
+
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1),
+            3
+        );
+
         return $this->render('item/index.html.twig', [
             'user' => $user,
             'collection' => $collection,
             'items' => $itemRepository->findByItemCollection($collection),
+            'pagination' => $pagination
         ]);
     }
 
