@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ItemCollection index{% endblock %}
+{% block title %}Collections{% endblock %}
 
 {% block body %}
-    <h1>ItemCollection index</h1>
+    <h1>Collections</h1>
 
     <table class="table">
         <thead>
@@ -16,24 +16,24 @@
             </tr>
         </thead>
         <tbody>
-        {% for item_collection in item_collections %}
-            <tr>
-                <td>{{ item_collection.id }}</td>
-                <td>{{ item_collection.name }}</td>
-                <td>{{ item_collection.description }}</td>
-                <td>{{ item_collection.imageUrl }}</td>
-                <td>
-                    <a href="{{ path('app_collection_show', {'id': item_collection.id}) }}">show</a>
-                    <a href="{{ path('app_collection_edit', {'id': item_collection.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
+            {% for collection in collections %}
+                <tr>
+                    <td>{{ collection.id }}</td>
+                    <td><a href="{{ path('app_item_index', {'user': user.id,'collection': collection.id}) }}">{{ collection.name }}</a></td>
+                    <td>{{ collection.description }}</td>
+                    <td>{{ collection.imageUrl }}</td>
+                    <td>
+                        <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
+                        <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_collection_new') }}">Create new</a>
+    <a href="{{ path('app_collection_new', {'user': user.id}) }}">Create new</a>
 {% endblock %}

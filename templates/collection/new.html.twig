@@ -7,5 +7,5 @@
 
     {{ include('collection/_form.html.twig') }}
 
-    <a href="{{ path('app_collection_index') }}">back to list</a>
+    <a href="{{ path('app_collection_index', {'user': user.id}) }}">back to list</a>
 {% endblock %}

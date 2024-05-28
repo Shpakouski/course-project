@@ -3,27 +3,33 @@
 namespace App\Controller;
 
 use App\Entity\ItemCollection;
+use App\Entity\User;
 use App\Form\ItemCollectionType;
 use App\Repository\ItemCollectionRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/collections')]
+#[Route('users/{user}')]
 class CollectionController extends AbstractController
 {
-    #[Route('/', name: 'app_collection_index', methods: ['GET'])]
-    public function index(ItemCollectionRepository $itemCollectionRepository): Response
+    #[Route('/', name: 'app_collection_list', methods: ['GET'])]
+    #[Route('/collections', name: 'app_collection_index', methods: ['GET'])]
+    public function index(ItemCollectionRepository $itemCollectionRepository, User $user): Response
     {
         return $this->render('collection/index.html.twig', [
-            'item_collections' => $itemCollectionRepository->findAll(),
+            'user' => $user,
+            'collections' => $itemCollectionRepository->findByUser($user),
         ]);
+
+
     }
 
-    #[Route('/new', name: 'app_collection_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/collections/new', name: 'app_collection_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, User $user): Response
     {
         $itemCollection = new ItemCollection();
         $form = $this->createForm(ItemCollectionType::class, $itemCollection);
@@ -35,27 +41,29 @@ class CollectionController extends AbstractController
 
             $this->addFlash('success', 'The collection has been successfully created');
 
-            return $this->redirectToRoute('app_collection_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_collection_index', ['user' => $user->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('collection/new.html.twig', [
-            'item_collection' => $itemCollection,
+            'user' => $user,
+            'collection' => $itemCollection,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_collection_show', methods: ['GET'])]
-    public function show(ItemCollection $itemCollection): Response
+    #[Route('/collections/{collection}', name: 'app_collection_show', methods: ['GET'])]
+    public function show(User $user, ItemCollection $collection): Response
     {
         return $this->render('collection/show.html.twig', [
-            'item_collection' => $itemCollection,
+            'user' => $user,
+            'collection' => $collection,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_collection_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ItemCollection $itemCollection, EntityManagerInterface $entityManager): Response
+    #[Route('/collections/{collection}/edit', name: 'app_collection_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, ItemCollection $collection, EntityManagerInterface $entityManager, User $user): Response
     {
-        $form = $this->createForm(ItemCollectionType::class, $itemCollection);
+        $form = $this->createForm(ItemCollectionType::class, $collection);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -63,23 +71,25 @@ class CollectionController extends AbstractController
 
             $this->addFlash('success', 'The collection has been successfully edited');
 
-            return $this->redirectToRoute('app_collection_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_collection_index', ['user' => $user->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('collection/edit.html.twig', [
-            'item_collection' => $itemCollection,
+            'user' => $user,
+            'collection' => $collection,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_collection_delete', methods: ['POST'])]
-    public function delete(Request $request, ItemCollection $itemCollection, EntityManagerInterface $entityManager): Response
+    #[Route('/collections/{collection}', name: 'app_collection_delete', methods: ['POST'])]
+    public function delete(Request $request, ItemCollection $collection, EntityManagerInterface $entityManager, User $user): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $itemCollection->getId(), $request->getPayload()->get('_token'))) {
-            $entityManager->remove($itemCollection);
+        if ($this->isCsrfTokenValid('delete' . $collection->getId(), $request->getPayload()->get('_token'))) {
+            $entityManager->remove($collection);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_collection_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_collection_index', ['user' => $user->getId()], Response::HTTP_SEE_OTHER);
     }
+
 }
