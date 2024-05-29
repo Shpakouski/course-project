@@ -31,12 +31,13 @@ class CollectionController extends AbstractController
     #[Route('/collections/new', name: 'app_collection_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, User $user): Response
     {
-        $itemCollection = new ItemCollection();
-        $form = $this->createForm(ItemCollectionType::class, $itemCollection);
+        $collection = new ItemCollection();
+        $form = $this->createForm(ItemCollectionType::class, $collection);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($itemCollection);
+            $collection->setUser($this->getUser());
+            $entityManager->persist($collection);
             $entityManager->flush();
 
             $this->addFlash('success', 'The collection has been successfully created');
@@ -46,7 +47,7 @@ class CollectionController extends AbstractController
 
         return $this->render('collection/new.html.twig', [
             'user' => $user,
-            'collection' => $itemCollection,
+            'collection' => $collection,
             'form' => $form,
         ]);
     }
@@ -67,6 +68,7 @@ class CollectionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $collection->setUser($this->getUser());
             $entityManager->flush();
 
             $this->addFlash('success', 'The collection has been successfully edited');

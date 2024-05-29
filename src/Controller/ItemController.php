@@ -45,6 +45,7 @@ class ItemController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $item->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($item);
             $entityManager->flush();
 
@@ -76,6 +77,7 @@ class ItemController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $item->setCreatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
             return $this->redirectToRoute('app_item_index', ['user' => $user->getId(), 'collection' => $collection->getId(),], Response::HTTP_SEE_OTHER);
