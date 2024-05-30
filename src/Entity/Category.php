@@ -67,7 +67,6 @@ class Category
     public function removeItemCollection(ItemCollection $itemCollection): static
     {
         if ($this->itemCollections->removeElement($itemCollection)) {
-            // set the owning side to null (unless already changed)
             if ($itemCollection->getCategory() === $this) {
                 $itemCollection->setCategory(null);
             }

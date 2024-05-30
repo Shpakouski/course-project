@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AttributeValue;
 use App\Entity\Item;
 use App\Entity\ItemCollection;
 use App\Entity\User;
@@ -24,9 +25,9 @@ class ItemController extends AbstractController
         $query = $itemRepository->findByUserAndCollection($user, $collection);
 
         $pagination = $paginator->paginate(
-            $query, /* query NOT result */
+            $query,
             $request->query->getInt('page', 1),
-            3
+            5
         );
 
         return $this->render('item/index.html.twig', [
@@ -38,16 +39,26 @@ class ItemController extends AbstractController
     }
 
     #[Route('/items/new', name: 'app_item_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ItemCollection $collection, User $user): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository): Response
     {
         $item = new Item();
-        $form = $this->createForm(ItemType::class, $item);
+
+        $item->setItemCollection($collection);
+
+        $form = $this->createForm(ItemType::class, $item, [
+            'collection' => $collection,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $item->setItemCollection($collection);
             $item->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($item);
+
+            $itemRepository->createCustomAttributes($item, $collection, $form, $entityManager);
             $entityManager->flush();
+
+            $this->addFlash('success', 'The item has been successfully created');
 
             return $this->redirectToRoute('app_item_index', ['user' => $user->getId(), 'collection' => $collection->getId(),], Response::HTTP_SEE_OTHER);
         }
@@ -71,14 +82,26 @@ class ItemController extends AbstractController
     }
 
     #[Route('/items/{item}/edit', name: 'app_item_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user): Response
+    public function edit(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository): Response
     {
-        $form = $this->createForm(ItemType::class, $item);
+        $attributes = $entityManager->getRepository(AttributeValue::class)->findBy(['item' => $item]);
+        $attributeValues = [];
+        foreach ($attributes as $attribute) {
+            $fieldName = AttributeValue::ATTR_PREFIX . $attribute->getCustomAttribute()->getId();
+            $attributeValues[$fieldName] = $attribute->getValue($attribute->getCustomAttribute()->getType()->value);
+        }
+        $form = $this->createForm(ItemType::class, $item, [
+            'collection' => $collection,
+            'attributes' => $attributeValues,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $item->setCreatedAt(new \DateTimeImmutable());
+            $itemRepository->editCustomAttributes($item, $collection, $form, $entityManager);
+            $item->setItemCollection($collection);
             $entityManager->flush();
+
+            $this->addFlash('success', 'The item has been successfully edited');
 
             return $this->redirectToRoute('app_item_index', ['user' => $user->getId(), 'collection' => $collection->getId(),], Response::HTTP_SEE_OTHER);
         }
@@ -98,6 +121,8 @@ class ItemController extends AbstractController
             $entityManager->remove($item);
             $entityManager->flush();
         }
+
+        $this->addFlash('danger', 'The item has been successfully deleted');
 
         return $this->redirectToRoute('app_item_index', ['user' => $user->getId(), 'collection' => $collection->getId(),], Response::HTTP_SEE_OTHER);
     }

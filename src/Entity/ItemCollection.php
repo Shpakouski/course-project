@@ -42,7 +42,7 @@ class ItemCollection
      */
     #[ORM\OneToMany(targetEntity: CustomAttribute::class, mappedBy: 'ItemCollection', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Assert\Valid]
-    #[CollectionCustomAttribute(maxItemPerType: 1)]
+    #[CollectionCustomAttribute(maxItemPerType: 3)]
     private Collection $customAttributes;
 
     /**
@@ -143,7 +143,6 @@ class ItemCollection
     public function removeCustomAttribute(CustomAttribute $customAttribute): static
     {
         if ($this->customAttributes->removeElement($customAttribute)) {
-            // set the owning side to null (unless already changed)
             if ($customAttribute->getItemCollection() === $this) {
                 $customAttribute->setItemCollection(null);
             }
@@ -173,7 +172,6 @@ class ItemCollection
     public function removeItem(Item $item): static
     {
         if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
             if ($item->getItemCollection() === $this) {
                 $item->setItemCollection(null);
             }

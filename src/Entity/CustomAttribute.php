@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\CustomAttributeType;
 use App\Repository\CustomAttributeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,6 +29,17 @@ class CustomAttribute
     #[ORM\ManyToOne(inversedBy: 'customAttributes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ItemCollection $ItemCollection = null;
+
+    /**
+     * @var Collection<int, AttributeValue>
+     */
+    #[ORM\OneToMany(targetEntity: AttributeValue::class, mappedBy: 'customAttribute', orphanRemoval: true)]
+    private Collection $attributeValues;
+
+    public function __construct()
+    {
+        $this->attributeValues = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -65,6 +78,35 @@ class CustomAttribute
     public function setItemCollection(?ItemCollection $ItemCollection): static
     {
         $this->ItemCollection = $ItemCollection;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AttributeValue>
+     */
+    public function getAttributeValues(): Collection
+    {
+        return $this->attributeValues;
+    }
+
+    public function addAttributeValue(AttributeValue $attributeValue): static
+    {
+        if (!$this->attributeValues->contains($attributeValue)) {
+            $this->attributeValues->add($attributeValue);
+            $attributeValue->setCustomAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttributeValue(AttributeValue $attributeValue): static
+    {
+        if ($this->attributeValues->removeElement($attributeValue)) {
+            if ($attributeValue->getCustomAttribute() === $this) {
+                $attributeValue->setCustomAttribute(null);
+            }
+        }
 
         return $this;
     }
