@@ -3,35 +3,36 @@
 {% block title %}Привет! Hello!{% endblock %}
 
 {% block body %}
-
-    <div class="alert alert-warning" role="alert">
-        Сайт находится в разработке. Наши контакты: support@luxurymoda.ru
+    <div class="container-fluid">
+        <div class="alert alert-warning" role="alert">
+            Сайт находится в разработке. Наши контакты: support@luxurymoda.ru
+        </div>
+        <div class="alert alert-warning" role="alert">
+            The site is under construction. Our contacts: support@luxurymoda.ru
+        </div>
+        <h2>Largest Collections</h2>
+        <ul class="list-unstyled">
+            {% for collection in largestCollections %}
+                <li>
+                    <a href="{{ path('app_collection_show', {'user': collection.user.id,'collection': collection.id}) }}">{{ collection.name }}
+                        ({{ collection.items|length }} items)</a></li>
+            {% endfor %}
+        </ul>
+        <h2>Most Recent Items</h2>
+        <ul class="list-unstyled">
+            {% for item in recentItems %}
+                <li>
+                    <a href="{{ path('app_item_show', {'user': item.itemCollection.user.id, 'collection': item.itemCollection.id,'item': item.id}) }}">{{ item.name }}
+                        (Created
+                        at: {{ item.createdAt|date('Y-m-d H:i:s') }})</a></li>
+            {% endfor %}
+        </ul>
+        <h2>All Tags</h2>
+        <ul class="list-unstyled">
+            {% for tag in tags %}
+                <li><a href="#">{{ tag.name }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="alert alert-warning" role="alert">
-        The site is under construction. Our contacts: support@luxurymoda.ru
-    </div>
-    <h2>Largest Collections</h2>
-    <ul class="list-unstyled">
-        {% for collection in largestCollections %}
-            <li>
-                <a href="{{ path('app_collection_show', {'user': collection.user.id,'collection': collection.id}) }}">{{ collection.name }}
-                    ({{ collection.items|length }} items)</a></li>
-        {% endfor %}
-    </ul>
-    <h2>Most Recent Items</h2>
-    <ul class="list-unstyled">
-        {% for item in recentItems %}
-            <li>
-                <a href="{{ path('app_item_show', {'user': item.itemCollection.user.id, 'collection': item.itemCollection.id,'item': item.id}) }}">{{ item.name }}
-                    (Created
-                    at: {{ item.createdAt|date('Y-m-d H:i:s') }})</a></li>
-        {% endfor %}
-    </ul>
-    <h2>All Tags</h2>
-    <ul class="list-unstyled">
-        {% for tag in tags %}
-            <li><a href="#">{{ tag.name }}</a></li>
-        {% endfor %}
-    </ul>
 
 {% endblock %}

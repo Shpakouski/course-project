@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ItemCollectionRepository::class)]
+#[Index(name: "collection_fulltext_idx", columns: ["name", "description"], flags: ["fulltext"])]
 class ItemCollection
 {
     #[ORM\Id]

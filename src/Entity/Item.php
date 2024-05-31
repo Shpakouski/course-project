@@ -6,8 +6,10 @@ use App\Repository\ItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
+#[Index(name: "item_fulltext_idx", columns: ["name"], flags: ["fulltext"])]
 class Item
 {
     #[ORM\Id]

@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[Index(name: "comment_fulltext_idx", columns: ["content"], flags: ["fulltext"])]
 class Comment
 {
     #[ORM\Id]

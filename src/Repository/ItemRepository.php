@@ -80,7 +80,7 @@ class ItemRepository extends ServiceEntityRepository
                 break;
         }
     }
-    
+
     public function findMostRecentItems(int $limit = 10): array
     {
         return $this->createQueryBuilder('i')
@@ -88,5 +88,25 @@ class ItemRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function fullTextSearch(string $query): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT i.* FROM item i
+            LEFT JOIN comment c ON c.item_id = i.id
+            LEFT JOIN item_collection col ON col.id = i.item_collection_id
+            LEFT JOIN tag_item it ON it.item_id = i.id
+            LEFT JOIN tag t ON t.id = it.tag_id
+            WHERE MATCH (i.name) AGAINST (:query)
+            OR MATCH (c.content) AGAINST (:query)
+            OR MATCH (col.name, col.description) AGAINST (:query)
+            OR MATCH (t.name) AGAINST (:query)
+        ';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['query' => $query]);
+        return $resultSet->fetchAllAssociative();
     }
 }

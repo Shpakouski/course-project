@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block body %}
+    <h1>Hello✅</h1>
+    <div class="container mt-5">
+        {{ form_start(form, {'attr': {'class': 'col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto', 'role': 'search'}}) }}
+        {{ form_widget(form.query, {'attr': {'class': 'form-control', 'placeholder': 'Search...', 'aria-label': 'Search'}}) }}
+        {{ form_end(form) }}
+        <hr>
+
+        <h2>Search Results</h2>
+        <ul class="list-group">
+
+            {% dump(results) %}
+            {% for item in results %}
+                <li class="list-group-item">
+                    <a href="#">{{ item.name }}</a>
+                </li>
+            {% else %}
+                <li class="list-group-item">No results found</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+{% endblock %}
