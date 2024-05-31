@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\AttributeValue;
 use App\Entity\Item;
 use App\Entity\ItemCollection;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Form\ItemType;
 use App\Repository\ItemRepository;
+use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,7 +41,7 @@ class ItemController extends AbstractController
     }
 
     #[Route('/items/new', name: 'app_item_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository, TagRepository $tagRepository): Response
     {
         $item = new Item();
 
@@ -56,6 +58,9 @@ class ItemController extends AbstractController
             $entityManager->persist($item);
 
             $itemRepository->createCustomAttributes($item, $collection, $form, $entityManager);
+
+            $tagRepository->addTags($form, $entityManager, $item);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'The item has been successfully created');
@@ -82,7 +87,7 @@ class ItemController extends AbstractController
     }
 
     #[Route('/items/{item}/edit', name: 'app_item_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository): Response
+    public function edit(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository, TagRepository $tagRepository): Response
     {
         $attributes = $entityManager->getRepository(AttributeValue::class)->findBy(['item' => $item]);
         $attributeValues = [];
@@ -93,12 +98,16 @@ class ItemController extends AbstractController
         $form = $this->createForm(ItemType::class, $item, [
             'collection' => $collection,
             'attributes' => $attributeValues,
+            'item' => $item,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $itemRepository->editCustomAttributes($item, $collection, $form, $entityManager);
             $item->setItemCollection($collection);
+
+            $tagRepository->addTags($form, $entityManager, $item);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'The item has been successfully edited');

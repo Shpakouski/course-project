@@ -22,12 +22,22 @@ class ItemType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+
+        $tags = '';
+        if ($options['item']) {
+            foreach ($options['item']->getTags() as $tag) {
+                $tags .= $tag->getName() . ' ';
+            }
+        }
+
         $builder
             ->add('name')
-            ->add('tags', EntityType::class, [
-                'class' => Tag::class,
-                'choice_label' => 'name',
-                'multiple' => true,
+            ->add('tags', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'tag-input'],
+                'data' => $tags,
             ]);
 
 
@@ -53,6 +63,7 @@ class ItemType extends AbstractType
             'data_class' => Item::class,
             'collection' => ItemCollection::class,
             'attributes' => [],
+            'item' => Item::class,
         ]);
     }
 

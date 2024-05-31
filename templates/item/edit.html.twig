@@ -2,6 +2,8 @@
 
 {% block title %}Edit Item{% endblock %}
 
+
+
 {% block body %}
     <h1>Edit Item</h1>
 
@@ -10,4 +12,69 @@
     <a href="{{ path('app_item_index',{'user': user.id, 'collection': collection.id}) }}">back to list</a>
 
     {{ include('item/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .autocomplete-list {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            z-index: 1000;
+            background-color: white;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .autocomplete-list li {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .autocomplete-list li:hover {
+            background-color: #eee;
+        }
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tagsInput = document.querySelector('.tag-input');
+            let autocompleteList = document.createElement('ul');
+            autocompleteList.classList.add('autocomplete-list');
+            tagsInput.parentNode.appendChild(autocompleteList);
+
+            tagsInput.addEventListener('input', function() {
+                const term = this.value.split(' ').pop();
+                if (term.length > 0) {
+                    fetch('{{ path('app_tags_autocomplete') }}?term=' + term)
+                        .then(response => response.json())
+                        .then(data => {
+                            autocompleteList.innerHTML = '';
+                            data.forEach(tag => {
+                                let item = document.createElement('li');
+                                item.textContent = tag;
+                                item.addEventListener('click', function() {
+                                    let tags = tagsInput.value.split(' ');
+                                    tags.pop();
+                                    tags.push(tag);
+                                    tagsInput.value = tags.join(' ') + ' ';
+                                    autocompleteList.innerHTML = '';
+                                });
+                                autocompleteList.appendChild(item);
+                            });
+                        });
+                } else {
+                    autocompleteList.innerHTML = '';
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!tagsInput.contains(e.target)) {
+                    autocompleteList.innerHTML = '';
+                }
+            });
+        });
+    </script>
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
 {% endblock %}
