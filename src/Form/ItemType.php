@@ -23,21 +23,13 @@ class ItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-
-        $tags = '';
-        if ($options['item']) {
-            foreach ($options['item']->getTags() as $tag) {
-                $tags .= $tag->getName() . ' ';
-            }
-        }
-
         $builder
             ->add('name')
             ->add('tags', TextType::class, [
                 'mapped' => false,
                 'required' => false,
                 'attr' => ['class' => 'tag-input'],
-                'data' => $tags,
+                'data' => $this->getTags($options['item']),
             ]);
 
 
@@ -77,4 +69,14 @@ class ItemType extends AbstractType
             default => TextType::class,
         };
     }
+
+    private function getTags(Item $item): string
+    {
+        $tags = '';
+        foreach ($item->getTags() as $tag) {
+            $tags .= $tag->getName() . ' ';
+        }
+        return $tags;
+    }
+
 }

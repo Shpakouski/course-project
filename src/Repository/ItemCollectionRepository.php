@@ -15,4 +15,15 @@ class ItemCollectionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ItemCollection::class);
     }
+    public function findLargestCollections(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c, COUNT(i.id) AS HIDDEN item_count')
+            ->leftJoin('c.items', 'i')
+            ->groupBy('c.id')
+            ->orderBy('item_count', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

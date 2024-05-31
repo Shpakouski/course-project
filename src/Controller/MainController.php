@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\ItemCollectionRepository;
+use App\Repository\ItemRepository;
+use App\Repository\TagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,10 +12,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
-    public function index(): Response
+    public function index(ItemCollectionRepository $itemCollectionRepository, ItemRepository $itemRepository, TagRepository $tagRepository): Response
     {
+
+        $user = $this->getUser();
+        $tags = $tagRepository->findAll();
+        $largestCollections = $itemCollectionRepository->findLargestCollections();
+        $recentItems = $itemRepository->findMostRecentItems();
+
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
+            'largestCollections' => $largestCollections,
+            'recentItems' => $recentItems,
+            'tags' => $tags,
+            'user' => $user,
         ]);
     }
 }

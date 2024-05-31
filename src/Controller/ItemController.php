@@ -49,6 +49,7 @@ class ItemController extends AbstractController
 
         $form = $this->createForm(ItemType::class, $item, [
             'collection' => $collection,
+            'item' => $item,
         ]);
         $form->handleRequest($request);
 
