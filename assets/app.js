@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
 import './js/bootstrap.bundle.min.js';
 import './js/collection-form-helper.js';
+import './js/theme-switcher.js';
 
 
 

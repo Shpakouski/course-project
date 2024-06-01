@@ -1,0 +1,9 @@
+.light-theme {
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #000000;
+}
+
+.dark-theme {
+    --bs-body-bg: #000000;
+    --bs-body-color: #ffffff;
+}
