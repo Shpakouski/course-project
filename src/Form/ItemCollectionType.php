@@ -7,8 +7,10 @@ use App\Entity\ItemCollection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ItemCollectionType extends AbstractType
 {
@@ -17,10 +19,24 @@ class ItemCollectionType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('imageUrl')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
+            ])
+            ->add('imageFile', FileType::class, [
+                'label' => 'Item Image (JPEG or PNG file)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file (JPEG or PNG)',
+                    ])
+                ],
             ])
             ->add('customAttributes', CollectionType::class, [
                 'entry_type' => CustomAttributeType::class,

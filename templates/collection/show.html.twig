@@ -38,4 +38,10 @@
     <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
 
     {{ include('collection/_delete_form.html.twig') }}
+
+    <h1>{{ collection.name }}</h1>
+    {% if collection.imageUrl %}
+        <img src="{{ collection.imageUrl }}" alt="{{ collection.name }} Image">
+    {% endif %}
+    <p>{{ collection.description }}</p>
 {% endblock %}
