@@ -61,6 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $blocked = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
     public function __construct()
     {
         $this->itemCollections = new ArrayCollection();
@@ -238,6 +241,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBlocked(bool $blocked): static
     {
         $this->blocked = $blocked;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

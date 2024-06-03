@@ -1,40 +1,41 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Collections{% endblock %}
 
 {% block body %}
     <h1>Collections</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>ImageUrl</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for collection in collections %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>{{ collection.id }}</td>
-                    <td><a href="{{ path('app_item_index', {'user': user.id,'collection': collection.id}) }}">{{ collection.name }}</a></td>
-                    <td>{{ collection.description }}</td>
-                    <td>{{ collection.imageUrl }}</td>
-                    <td>
-                        <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
-                        <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
-                    </td>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>ImageUrl</th>
+                    <th>actions</th>
                 </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">no records found</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+                {% for collection in collections %}
+                    <tr>
+                        <td>{{ collection.id }}</td>
+                        <td>
+                            <a href="{{ path('app_item_index', {'user': user.id,'collection': collection.id}) }}">{{ collection.name }}</a>
+                        </td>
+                        <td>{{ collection.description }}</td>
+                        <td>{{ collection.imageUrl }}</td>
+                        <td>
+                            <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
+                            <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">no records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <a href="{{ path('app_collection_new', {'user': user.id}) }}">Create new</a>
 {% endblock %}
