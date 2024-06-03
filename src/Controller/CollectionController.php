@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('users/{user}')]
@@ -32,6 +33,8 @@ class CollectionController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, User $user, SluggerInterface $slugger): Response
     {
         $collection = new ItemCollection();
+        $collection->setUser($this->getUser());
+        $this->denyAccessUnlessGranted('create', $collection);
         $form = $this->createForm(ItemCollectionType::class, $collection);
         $form->handleRequest($request);
 
@@ -54,7 +57,6 @@ class CollectionController extends AbstractController
                 }
             }
 
-            $collection->setUser($this->getUser());
             $entityManager->persist($collection);
             $entityManager->flush();
 
@@ -82,6 +84,7 @@ class CollectionController extends AbstractController
     #[Route('/collections/{collection}/edit', name: 'app_collection_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ItemCollection $collection, EntityManagerInterface $entityManager, User $user, SluggerInterface $slugger): Response
     {
+        $this->denyAccessUnlessGranted('edit',$collection);
         $form = $this->createForm(ItemCollectionType::class, $collection);
         $form->handleRequest($request);
 
@@ -122,6 +125,7 @@ class CollectionController extends AbstractController
     #[Route('/collections/{collection}', name: 'app_collection_delete', methods: ['POST'])]
     public function delete(Request $request, ItemCollection $collection, EntityManagerInterface $entityManager, User $user): Response
     {
+        $this->denyAccessUnlessGranted('delete',$collection);
         if ($this->isCsrfTokenValid('delete' . $collection->getId(), $request->getPayload()->get('_token'))) {
             $entityManager->remove($collection);
             $entityManager->flush();

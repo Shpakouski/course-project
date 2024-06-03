@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html{% block html_class %}{% endblock %}>
+<html{% block html_class %}{% endblock %} lang="{{ app.request.locale }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{{ 'theme.title'|trans }}{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
         {% endblock %}
@@ -18,6 +18,11 @@
                         <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
                     </form>
 
+                    <div class="language-switcher d-flex align-items-center m-2">
+                        <a href="{{ path('switch_language', { 'locale': 'en' }) }}" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover me-2">English</a>
+                        <a href="{{ path('switch_language', { 'locale': 'ru' }) }}" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover me-2">Русский</a>
+                    </div>
+
                     <nav class="navbar navbar-expand-lg bg-body-tertiary me-3">
                         <div class="container-fluid">
                             <a class="navbar-brand" href="{{ path('app_main') }}">Luxurymoda</a>
@@ -27,22 +32,26 @@
                             <div class="collapse navbar-collapse" id="navbarNav">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                        <a class="nav-link active" aria-current="page" href="{{ path('app_main') }}">Home</a>
+                                        <a class="nav-link active" aria-current="page" href="{{ path('app_main') }}">{{ 'theme.home'|trans }}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ path('app_search') }}">Search</a>
+                                        <a class="nav-link" href="{{ path('app_search') }}">{{ 'theme.search'|trans }}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ path('admin') }}">Admin</a>
+                                        <a class="nav-link" href="{{ path('admin') }}">{{ 'theme.admin'|trans }}</a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </nav>
                     <div class="text-end">
-                        <a href="{{ path('app_login') }}" class="btn btn-light text-dark me-2">Login</a>
-                        <a href="{{ path('app_register') }}" class="btn btn-primary">Sign-up</a>
-                        <button id="theme-switcher" class="btn btn-outline-info">Toggle Theme</button>
+                        {% if app.user %}
+                            <a href="{{ path('app_logout') }}" class="btn btn-light text-dark me-2">{{ 'theme.logout'|trans }}</a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-light text-dark me-2">{{ 'theme.login'|trans }}</a>
+                            <a href="{{ path('app_register') }}" class="btn btn-primary">{{ 'theme.signup'|trans }}</a>
+                        {% endif %}
+                        <button id="theme-switcher" class="btn btn-outline-info">{{ 'theme.toggle'|trans }}</button>
                     </div>
                 </div>
             </header>

@@ -1,0 +1,11 @@
+# translations/messages.en.yaml
+theme:
+  toggle: "Toggle Theme"
+  title: "Course Project"
+  admin: "Admin"
+  home: "Home"
+  search: "Search"
+  construction: "The site is under construction. Our contacts: support@luxurymoda.ru"
+  signup: "Sign-up"
+  login: "Login"
+  logout: "Logout"

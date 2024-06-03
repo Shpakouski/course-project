@@ -41,7 +41,7 @@
 
     <h1>{{ collection.name }}</h1>
     {% if collection.imageUrl %}
-        <img src="{{ collection.imageUrl }}" alt="{{ collection.name }} Image">
+        <img src="{{ collection.imageUrl }}" class="img-fluid" alt="{{ collection.name }} Image">
     {% endif %}
     <p>{{ collection.description }}</p>
 {% endblock %}

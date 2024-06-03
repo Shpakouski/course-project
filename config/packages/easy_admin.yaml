@@ -1,0 +1,5 @@
+easy_admin:
+  design:
+    templates:
+      crud:
+        index: 'admin/user/index.html.twig'

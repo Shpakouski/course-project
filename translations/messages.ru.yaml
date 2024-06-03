@@ -1,0 +1,11 @@
+# translations/messages.ru.yaml
+theme:
+  toggle: "Переключить"
+  title: "Курсовой проект"
+  admin: "Админ"
+  home: "Главная"
+  search: "Поиск"
+  construction: "Сайт находится в разработке. Наши контакты: support@luxurymoda.ru"
+  signup: "Создать"
+  login: "Войти"
+  logout: "Выйти"

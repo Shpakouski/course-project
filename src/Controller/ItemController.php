@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('users/{user}/collections/{collection}')]
 class ItemController extends AbstractController
@@ -50,6 +51,7 @@ class ItemController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository, TagRepository $tagRepository): Response
     {
         $item = new Item();
+        $this->denyAccessUnlessGranted('create', $item);
 
         $item->setItemCollection($collection);
 
@@ -91,7 +93,7 @@ class ItemController extends AbstractController
 DESC']);
         $comment = new Comment();
         $commentForm = $this->createForm(CommentType::class, $comment, [
-            'action' => $this->generateUrl('app_item_comment', ['user' => $user->getId(), 'collection' => $collection->getId(),'id' => $item->getId()]),
+            'action' => $this->generateUrl('app_item_comment', ['user' => $user->getId(), 'collection' => $collection->getId(), 'id' => $item->getId()]),
             'method' => 'POST',
         ]);
 
@@ -107,6 +109,7 @@ DESC']);
     #[Route('/items/{item}/edit', name: 'app_item_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user, ItemRepository $itemRepository, TagRepository $tagRepository): Response
     {
+        $this->denyAccessUnlessGranted('edit', $item);
         $attributes = $entityManager->getRepository(AttributeValue::class)->findBy(['item' => $item]);
         $attributeValues = [];
         foreach ($attributes as $attribute) {
@@ -144,6 +147,7 @@ DESC']);
     #[Route('/items/{item}', name: 'app_item_delete', methods: ['POST'])]
     public function delete(Request $request, Item $item, EntityManagerInterface $entityManager, ItemCollection $collection, User $user): Response
     {
+        $this->denyAccessUnlessGranted('delete', $item);
         if ($this->isCsrfTokenValid('delete' . $item->getId(), $request->getPayload()->get('_token'))) {
             $entityManager->remove($item);
             $entityManager->flush();
@@ -165,10 +169,6 @@ DESC']);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment->setItem($item);
             $comment->setUser($this->getUser());
-            if(!$this->getUser()){
-                $anonymous=$entityManager->getRepository(User::class)->find(1);
-                $comment->setUser($anonymous);
-            }
             $entityManager->persist($comment);
             $entityManager->flush();
 

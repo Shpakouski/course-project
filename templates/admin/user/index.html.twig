@@ -1,0 +1,16 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+
+{% block content %}
+    <div class="content">
+        {{ parent() }}
+    </div>
+{% endblock %}
+
+{% block easyadmin_content_footer %}
+    <style>
+        .blocked-user {
+            background-color: #f8d7da;
+        }
+    </style>
+    {{ parent() }}
+{% endblock %}
