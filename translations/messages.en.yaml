@@ -9,3 +9,5 @@ theme:
   signup: "Sign-up"
   login: "Login"
   logout: "Logout"
+  submit: "Submit"
+  create-ticket: "Create Support Ticket"

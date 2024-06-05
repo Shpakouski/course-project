@@ -9,3 +9,5 @@ theme:
   signup: "Создать"
   login: "Войти"
   logout: "Выйти"
+  submit: "Отправить"
+  create-ticket: "Создать заявку"

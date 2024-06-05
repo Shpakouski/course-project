@@ -30,3 +30,10 @@ services:
 
     App\Security\LoginSuccessHandler:
         arguments: ['@router']
+
+    App\Service\JiraService:
+        arguments:
+            $baseUrl: '%env(JIRA_API_BASE_URL)%'
+            $email: '%env(JIRA_API_USER_EMAIL)%'
+            $apiToken: '%env(JIRA_API_TOKEN)%'
+            $projectKey: '%env(JIRA_PROJECT_KEY)%'
