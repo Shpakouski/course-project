@@ -34,6 +34,9 @@ services:
     App\Service\JiraService:
         arguments:
             $baseUrl: '%env(JIRA_API_BASE_URL)%'
-            $email: '%env(JIRA_API_USER_EMAIL)%'
             $apiToken: '%env(JIRA_API_TOKEN)%'
+            $email: '%env(JIRA_API_USER_EMAIL)%'
+
+    App\Controller\TicketController:
+        arguments:
             $projectKey: '%env(JIRA_PROJECT_KEY)%'

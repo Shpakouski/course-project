@@ -1,9 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello!{% endblock %}
+{% block title %}{{ 'theme.tickets'|trans }}{% endblock %}
 
 {% block body %}
-<div class="example-wrapper">
-    <h1>Hello✅</h1>
-</div>
+    <h1>{{ 'theme.my-tickets'|trans }}✅</h1>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'theme.summary'|trans }}</th>
+                    <th scope="col">{{ 'theme.priority'|trans }}</th>
+                    <th scope="col">{{ 'theme.status'|trans }}</th>
+                    <th scope="col">{{ 'theme.description'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in pager.currentPageResults %}
+                    <tr>
+                        <td>{{ ticket.fields.summary }}</td>
+                        <td>{{ ticket.fields.priority.name }}</td>
+                        <td>{{ ticket.fields.status.name }}</td>
+                        <td>{{ ticket.fields.description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <nav>
+        <ul class="pagination">
+            {% if pager.hasPreviousPage %}
+                <li>
+                    <a href="{{ path('app_ticket_index', {'page': pager.previousPage}) }}">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pager.nbPages %}
+                <li class="{{ page == pager.currentPage ? 'active' : '' }}">
+                    <a href="{{ path('app_ticket_index', {'page': page}) }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            {% if pager.hasNextPage %}
+                <li>
+                    <a href="{{ path('app_ticket_index', {'page': pager.nextPage}) }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 {% endblock %}

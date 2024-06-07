@@ -14,30 +14,29 @@
             {% endfor %}
         </ul>
         <h2>Most Recent Items</h2>
-        <ul class="list-unstyled">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
+                        <th scope="col">Item</th>
+                        <th scope="col">Collection</th>
+                        <th scope="col">Author</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in recentItems %}
                         <tr>
-
-                            <th scope="col">Item</th>
-                            <th scope="col">Collection</th>
-                            <th scope="col">Author</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in recentItems %}
-                        <tr>
-                            <td><a href="{{ path('app_item_show', {'user': item.itemCollection.user.id, 'collection': item.itemCollection.id,'item': item.id}) }}">{{ item.name}}</a></td>
+                            <td>
+                                <a href="{{ path('app_item_show', {'user': item.itemCollection.user.id, 'collection': item.itemCollection.id,'item': item.id}) }}">{{ item.name }}</a>
+                            </td>
                             <td>{{ item.itemCollection.name }}</td>
                             <td>{{ item.itemCollection.user.email }}</td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </ul>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         <h2>All Tags</h2>
         <ul class="list-unstyled">
             {% for tag in tags %}
