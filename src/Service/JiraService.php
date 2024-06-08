@@ -35,48 +35,22 @@ class JiraService
         }
     }
 
-    public function createUser(string $email, string $displayName): array
+    public function createUser(string $email): array
     {
         try {
-            $response = $this->client->post($this->baseUrl . '/rest/api/2/user', [
+            $response = $this->client->post($this->baseUrl . '/rest/api/3/user', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => $this->authHeader,
                 ],
                 'json' => [
                     'emailAddress' => $email,
-                    'displayName' => $displayName,
-                    'name' => $email,
-                    'notification' => false,
+                    'products' => ['jira-software'],
                 ],
             ]);
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody()->getContents());
-        }
-    }
-
-    public function userExists(string $email): bool
-    {
-        try {
-            $response = $this->client->get($this->baseUrl . '/rest/api/2/user/search', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => $this->authHeader,
-                ],
-                'query' => [
-                    'query' => $email,
-                ],
-            ]);
-
-            $users = json_decode($response->getBody()->getContents(), true);
-
-            return !empty($users);
-        } catch (RequestException $e) {
-            if ($e->getResponse()->getStatusCode() === 404) {
-                return false;
-            }
             throw new \Exception($e->getResponse()->getBody()->getContents());
         }
     }

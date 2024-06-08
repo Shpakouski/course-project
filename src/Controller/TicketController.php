@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ItemCollectionRepository;
 use Pagerfanta\Adapter\ArrayAdapter;
 use App\Form\TicketType;
 use App\Service\JiraService;
@@ -9,31 +10,37 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class TicketController extends AbstractController
 {
-    public function __construct(private string $projectKey)
+    public const ISSUE_TYPE = 'Ticket';
+
+    public function __construct(private string $projectKey, private string $baseTicketUrl)
     {
     }
 
     #[Route('/tickets/new', name: 'app_ticket_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, JiraService $jiraService): Response
+    public function new(Request $request, JiraService $jiraService, SessionInterface $session, ItemCollectionRepository $collectionRepository): Response
     {
+        if ($request->isMethod('GET')) {
+            $link = $request->headers->get('referer');
+            $session->set('referer_link', $link);
+        }
         $form = $this->createForm(TicketType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $userEmail = $this->getUser()->getEmail();
-            $link = $request->headers->get('referer');
-
-            if (!$jiraService->userExists($userEmail)) {
-                $jiraService->createUser($userEmail, $this->getUser()->getUsername());
-            }
-
+            $link = $session->get('referer_link');
             $accountId = $jiraService->getAccountIdByEmail($userEmail);
-
+            if (!$accountId) {
+                $user = $jiraService->createUser($userEmail);
+                $accountId = $user['accountId'];
+            }
+            $collection = $this->determineCollection($link, $collectionRepository);
             $jiraPayload = [
                 'fields' => [
                     'project' => [
@@ -42,7 +49,7 @@ class TicketController extends AbstractController
                     'summary' => $data['summary'],
                     'description' => $data['description'],
                     'issuetype' => [
-                        'name' => 'Ticket',
+                        'name' => self::ISSUE_TYPE,
                     ],
                     'priority' => [
                         'name' => $data['priority']->value,
@@ -50,11 +57,10 @@ class TicketController extends AbstractController
                     'reporter' => [
                         'accountId' => $accountId,
                     ],
-                    'customfield_10041' => 'Collection name if applicable', // Replace with actual custom field ID
-                    'customfield_10042' => $link, // Replace with actual custom field ID
+                    'customfield_10041' => $collection,
+                    'customfield_10043' => $link,
                 ],
             ];
-
             try {
                 $jiraResponse = $jiraService->createTicket($jiraPayload);
                 $this->addFlash('success', 'Ticket created successfully: ' . $jiraResponse['key']);
@@ -62,6 +68,7 @@ class TicketController extends AbstractController
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Failed to create Jira ticket: ' . $e->getMessage());
             }
+
         }
 
         return $this->render('ticket/new.html.twig', [
@@ -88,6 +95,23 @@ class TicketController extends AbstractController
 
         return $this->render('ticket/index.html.twig', [
             'pager' => $pagerfanta,
+            'baseTicketUrl' => $this->baseTicketUrl,
         ]);
+    }
+
+    private function determineCollection(string $link, ItemCollectionRepository $collectionRepository): ?string
+    {
+        $parsedUrl = parse_url($link);
+        $path = $parsedUrl['path'] ?? '';
+        $segments = explode('/', trim($path, '/'));
+
+        foreach ($segments as $index => $segment) {
+            if ($segment === 'collections' && isset($segments[$index + 1])) {
+                $collectionId = (int)$segments[$index + 1];
+                return $collectionRepository->findCollectionNameById($collectionId);
+            }
+        }
+
+        return null;
     }
 }

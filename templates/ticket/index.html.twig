@@ -18,7 +18,7 @@
             <tbody>
                 {% for ticket in pager.currentPageResults %}
                     <tr>
-                        <td>{{ ticket.fields.summary }}</td>
+                        <td><a href="{{ baseTicketUrl }}{{ ticket.key }}">{{ ticket.fields.summary }}</a></td>
                         <td>{{ ticket.fields.priority.name }}</td>
                         <td>{{ ticket.fields.status.name }}</td>
                         <td>{{ ticket.fields.description }}</td>

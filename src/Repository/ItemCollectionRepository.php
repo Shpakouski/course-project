@@ -15,6 +15,7 @@ class ItemCollectionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ItemCollection::class);
     }
+
     public function findLargestCollections(int $limit = 5): array
     {
         return $this->createQueryBuilder('c')
@@ -25,5 +26,15 @@ class ItemCollectionRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findCollectionNameById(int $id): ?string
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.name')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

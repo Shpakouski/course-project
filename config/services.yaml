@@ -40,3 +40,4 @@ services:
     App\Controller\TicketController:
         arguments:
             $projectKey: '%env(JIRA_PROJECT_KEY)%'
+            $baseTicketUrl: '%env(JIRA_API_BASE_TICKET_URL)%'
