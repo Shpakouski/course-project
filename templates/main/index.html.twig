@@ -5,23 +5,23 @@
         <div class="alert alert-warning" role="alert">
             {{ 'theme.construction'|trans }}
         </div>
-        <h2>Largest Collections</h2>
+        <h2>{{ 'theme.largest-collections'|trans }}</h2>
         <ul class="list-unstyled">
             {% for collection in largestCollections %}
                 <li>
                     <a href="{{ path('app_collection_show', {'user': collection.user.id,'collection': collection.id}) }}">{{ collection.name }}
-                        ({{ collection.items|length }} items)</a></li>
+                        ({{ collection.items|length }} {{ 'theme.items'|trans }})</a></li>
             {% endfor %}
         </ul>
-        <h2>Most Recent Items</h2>
+        <h2>{{ 'theme.most-recent-items'|trans }}</h2>
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
 
-                        <th scope="col">Item</th>
-                        <th scope="col">Collection</th>
-                        <th scope="col">Author</th>
+                        <th scope="col">{{ 'theme.item'|trans }}</th>
+                        <th scope="col">{{ 'theme.collection'|trans }}</th>
+                        <th scope="col">{{ 'theme.author'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +37,7 @@
                 </tbody>
             </table>
         </div>
-        <h2>All Tags</h2>
+        <h2>{{ 'theme.tags'|trans }}</h2>
         <ul class="list-unstyled">
             {% for tag in tags %}
                 <li><a href="#">{{ tag.name }}</a></li>

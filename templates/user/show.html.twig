@@ -7,7 +7,7 @@
     {% if app.user is same as(user) or is_granted("ROLE_ADMIN") %}
         <h4>All collections {{ user.email }}</h4>
         <p>Your API Token: <span id="api-token">{{ apiToken }}</span></p>
-        <button id="generate-token">Generate API Token</button>
+        <button id="generate-token" class="btn btn-primary">Generate API Token</button>
     {% endif %}
     <div class="table-responsive">
         <table class="table">

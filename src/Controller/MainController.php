@@ -16,7 +16,6 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(ItemCollectionRepository $itemCollectionRepository, ItemRepository $itemRepository, TagRepository $tagRepository, Request $request): Response
     {
-
         $user = $this->getUser();
         $tags = $tagRepository->findAll();
         $largestCollections = $itemCollectionRepository->findLargestCollections();
