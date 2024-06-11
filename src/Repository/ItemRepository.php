@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\AttributeValue;
 use App\Entity\Item;
 use App\Entity\ItemCollection;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Enum\CustomAttributeType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -108,5 +109,15 @@ class ItemRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['query' => $query]);
         return $resultSet->fetchAllAssociative();
+    }
+
+    public function findByTag(Tag $tag)
+    {
+        return $this->createQueryBuilder('i')
+            ->innerJoin('i.tags', 't')
+            ->where('t.id = :tag')
+            ->setParameter('tag', $tag->getId())
+            ->getQuery()
+            ->getResult();
     }
 }

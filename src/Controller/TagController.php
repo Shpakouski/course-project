@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ItemRepository;
 use App\Repository\TagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,5 +23,32 @@ class TagController extends AbstractController
         }, $tags);
 
         return new JsonResponse($tagNames);
+    }
+
+    #[Route('/tags', name: 'app_tag_cloud')]
+    public function tagCloud(TagRepository $tagRepository): Response
+    {
+        $tags = $tagRepository->findAllWithItemCounts();
+
+        return $this->render('tag/cloud.html.twig', [
+            'tags' => $tags,
+        ]);
+    }
+
+    #[Route('/tags/{id}', name: 'app_tag_items')]
+    public function itemsByTag(int $id, TagRepository $tagRepository, ItemRepository $itemRepository): Response
+    {
+        $tag = $tagRepository->find($id);
+
+        if (!$tag) {
+            throw $this->createNotFoundException('Tag not found');
+        }
+
+        $items = $itemRepository->findByTag($tag);
+
+        return $this->render('tag/items.html.twig', [
+            'tag' => $tag,
+            'items' => $items,
+        ]);
     }
 }

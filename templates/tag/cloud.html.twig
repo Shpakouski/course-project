@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Tag Cloud</h2>
+    <ul class="list-unstyled">
+        {% for item_count,tag  in tags %}
+            <li>
+                <a href="{{ path('app_tag_items', { id: tag[0].id }) }}" class="tag" style="font-size: {{ 0.8 + tag['item_count'] / 10 }}em;">
+                    {{ tag[0].name }} ({{ tag['item_count'] }})
+                </a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -17,7 +17,7 @@ class MainController extends AbstractController
     public function index(ItemCollectionRepository $itemCollectionRepository, ItemRepository $itemRepository, TagRepository $tagRepository, Request $request): Response
     {
         $user = $this->getUser();
-        $tags = $tagRepository->findAll();
+        $tags = $tagRepository->findAllWithItemCounts();
         $largestCollections = $itemCollectionRepository->findLargestCollections();
         $recentItems = $itemRepository->findMostRecentItems();
 

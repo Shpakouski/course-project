@@ -52,4 +52,14 @@ class TagRepository extends ServiceEntityRepository
         }
         $entityManager->persist($item);
     }
+
+    public function findAllWithItemCounts()
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t, COUNT(i.id) AS item_count')
+            ->leftJoin('t.item', 'i')
+            ->groupBy('t.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

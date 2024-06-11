@@ -29,3 +29,4 @@ theme:
   items: "айтемов"
   search-results: "Результаты поиска"
   no-results-found: "Ничего не найдено"
+  tag-cloud: "Облако тэгов"
