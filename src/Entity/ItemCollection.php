@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ItemCollectionRepository;
 use App\Validator\CollectionCustomAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,23 +10,32 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ItemCollectionRepository::class)]
 #[Index(name: "collection_fulltext_idx", columns: ["name", "description"], flags: ["fulltext"])]
+#[ApiResource(
+    shortName: 'collection',
+    normalizationContext: ['groups' => ['collection:read']],
+    denormalizationContext: ['groups' => ['collection:write']],
+)]
 class ItemCollection
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['collection:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
     #[Assert\NotBlank]
+    #[Groups(['collection:read', 'collection:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]
+    #[Groups(['collection:read', 'collection:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -33,10 +43,12 @@ class ItemCollection
 
     #[ORM\ManyToOne(inversedBy: 'itemCollections')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['collection:read', 'collection:write'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'itemCollections')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['collection:read', 'collection:write'])]
     private ?Category $category = null;
 
     /**
@@ -180,5 +192,11 @@ class ItemCollection
         }
 
         return $this;
+    }
+
+    #[Groups(['collection:read'])]
+    public function getNumberOfItems():int
+    {
+        return $this->items->count();
     }
 }

@@ -2,20 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['collection:read']],
+    denormalizationContext: ['groups' => ['collection:write']],
+)]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['collection:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups(['collection:read', 'collection:write'])]
     private ?string $name = null;
 
     /**

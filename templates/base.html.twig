@@ -42,6 +42,9 @@
                                     </li>
                                     {% if app.user %}
                                         <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_user_show', { user: app.user.id }) }}">{{ 'theme.profile'|trans }}</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" href="{{ path('app_ticket_new') }}">{{ 'theme.create-ticket'|trans }}</a>
                                         </li>
                                     {% endif %}

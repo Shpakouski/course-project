@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+    <h1>Profile✅</h1>
+    {% if app.user is same as(user) or is_granted("ROLE_ADMIN") %}
+        <h4>All collections {{ user.email }}</h4>
+        <p>Your API Token: <span id="api-token">{{ apiToken }}</span></p>
+        <button id="generate-token">Generate API Token</button>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>ImageUrl</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for collection in collections %}
+                    <tr>
+                        <td>{{ collection.id }}</td>
+                        <td>
+                            <a href="{{ path('app_item_index', {'user': user.id,'collection': collection.id}) }}">{{ collection.name }}</a>
+                        </td>
+                        <td>{{ collection.description }}</td>
+                        <td>{{ collection.imageUrl }}</td>
+                        <td>
+                            <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
+                            <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">no records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ path('app_collection_new', {'user': user.id}) }}">Create new</a>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+        document.getElementById('generate-token').addEventListener('click', function() {
+            fetch('{{ path('generate_api_token') }}', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('api-token').innerText = data.apiToken;
+                });
+        });
+    </script>
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+{% endblock %}

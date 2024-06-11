@@ -13,13 +13,11 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('users/{user}')]
 class CollectionController extends AbstractController
 {
-    #[Route('/', name: 'app_collection_list', methods: ['GET'])]
     #[Route('/collections', name: 'app_collection_index', methods: ['GET'])]
     public function index(ItemCollectionRepository $itemCollectionRepository, User $user): Response
     {

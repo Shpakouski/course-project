@@ -10,6 +10,12 @@ security:
         class: App\Entity\User
         property: email
   firewalls:
+    api:
+      pattern: ^/api
+      stateless: false
+      provider: app_user_provider
+      custom_authenticators:
+        - App\Security\ApiTokenAuthenticator
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
@@ -28,6 +34,7 @@ security:
       remember_me:
         secret: '%kernel.secret%'
 
+
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -39,6 +46,7 @@ security:
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/tickets, roles: ROLE_USER }
+#    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
   security:
