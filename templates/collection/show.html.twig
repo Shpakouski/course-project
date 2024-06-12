@@ -22,6 +22,14 @@
                 <th>ImageUrl</th>
                 <td>{{ collection.imageUrl }}</td>
             </tr>
+            <tr>
+                <th>Image</th>
+                <td>
+                    {% if collection.imageUrl %}
+                        <img src="{{ collection.imageUrl }}" class="img-fluid" alt="{{ collection.name }} Image">
+                    {% endif %}
+                </td>
+            </tr>
             {% if collection.getCustomAttributes.getValues %}
                 {% for attribute in collection.getCustomAttributes.getValues %}
                     <tr>
@@ -32,16 +40,9 @@
             {% endif %}
         </tbody>
     </table>
-
     <a href="{{ path('app_collection_index', {'user': user.id}) }}">back to list</a>
 
     <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
 
     {{ include('collection/_delete_form.html.twig') }}
-
-    <h1>{{ collection.name }}</h1>
-    {% if collection.imageUrl %}
-        <img src="{{ collection.imageUrl }}" class="img-fluid" alt="{{ collection.name }} Image">
-    {% endif %}
-    <p>{{ collection.description }}</p>
 {% endblock %}

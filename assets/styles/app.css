@@ -7,3 +7,11 @@
     --bs-body-bg: #000000;
     --bs-body-color: #ffffff;
 }
+
+ul.pagination li {
+    padding: 0.1rem;
+}
+
+.collection-index-image {
+    max-width: 18.75rem;
+}

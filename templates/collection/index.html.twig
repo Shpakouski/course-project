@@ -12,6 +12,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>ImageUrl</th>
+                    <th>Image</th>
                     <th>actions</th>
                 </tr>
             </thead>
@@ -24,6 +25,11 @@
                         </td>
                         <td>{{ collection.description }}</td>
                         <td>{{ collection.imageUrl }}</td>
+                        <td>
+                            {% if collection.imageUrl %}
+                                <img src="{{ collection.imageUrl }}" class="img-fluid collection-index-image" alt="{{ collection.name }} Image">
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
                             <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>

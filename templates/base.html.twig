@@ -43,7 +43,7 @@
                                             <a class="nav-link" href="{{ path('app_user_show', { user: app.user.id }) }}">{{ 'theme.profile'|trans }}</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ path('app_ticket_new') }}">{{ 'theme.create-ticket'|trans }}</a>
+                                            <a class="nav-link" href="{{ path('app_ticket_index') }}">{{ 'theme.tickets'|trans }}</a>
                                         </li>
                                     {% endif %}
                                 </ul>
@@ -66,6 +66,13 @@
             {% include 'main/_flash_message.html.twig' %}
             {% block body %}{% endblock %}
         </div>
+
+        <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3">
+            <a href="{{ path('app_ticket_new') }}" class="btn btn-primary py-2 d-flex align-items-center" type="button" aria-expanded="false">{{ 'theme.create-ticket'|trans }}
+            </a>
+            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"></span>
+        </div>
+
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}

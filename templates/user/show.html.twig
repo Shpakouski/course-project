@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserController!{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block body %}
     <h1>Profile✅</h1>
     {% if app.user is same as(user) or is_granted("ROLE_ADMIN") %}
-        <h4>All collections {{ user.email }}</h4>
+        <a href="{{ path('app_ticket_index') }}" class="btn btn-warning">{{ 'theme.my-tickets'|trans }}</a>
         <p>Your API Token: <span id="api-token">{{ apiToken }}</span></p>
         <button id="generate-token" class="btn btn-primary">Generate API Token</button>
+        <h4>All collections {{ user.email }}</h4>
     {% endif %}
     <div class="table-responsive">
         <table class="table">
@@ -17,6 +18,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>ImageUrl</th>
+                    <th>Image</th>
                     <th>actions</th>
                 </tr>
             </thead>
@@ -29,6 +31,11 @@
                         </td>
                         <td>{{ collection.description }}</td>
                         <td>{{ collection.imageUrl }}</td>
+                        <td>
+                            {% if collection.imageUrl %}
+                                <img src="{{ collection.imageUrl }}" class="img-fluid collection-index-image" alt="{{ collection.name }} Image">
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{{ path('app_collection_show', {'user': user.id,'collection': collection.id}) }}">show</a>
                             <a href="{{ path('app_collection_edit', {'user': user.id,'collection': collection.id}) }}">edit</a>
@@ -49,8 +56,8 @@
 
 {% block javascripts %}
     <script>
-        document.getElementById('generate-token').addEventListener('click', function() {
-            fetch('{{ path('generate_api_token') }}', { method: 'POST' })
+        document.getElementById('generate-token').addEventListener('click', function () {
+            fetch('{{ path('generate_api_token') }}', {method: 'POST'})
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('api-token').innerText = data.apiToken;

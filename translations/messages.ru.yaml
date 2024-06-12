@@ -10,7 +10,7 @@ theme:
   login: "Войти"
   logout: "Выйти"
   submit: "Отправить"
-  create-ticket: "Тикет"
+  create-ticket: "Создать тикет"
   profile: "Профиль"
   summary: "Резюме"
   priority: "Приоритет"

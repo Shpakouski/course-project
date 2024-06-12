@@ -15,6 +15,19 @@
                 <th>Name</th>
                 <td>{{ item.name }}</td>
             </tr>
+            {% if item.itemCollection.customAttributes %}
+                {% for attribute in item.itemCollection.customAttributes %}
+                    {% set type = attribute.type.value %}
+                    <tr>
+                        <th>{{ attribute.name }}</th>
+                        <td>
+                            {% for value in  item.attributeValues %}
+                                {{ value.value(type) }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 
@@ -28,8 +41,8 @@
         <h1>{{ item.name }}</h1>
         <p>Created at: {{ item.createdAt|date('Y-m-d H:i:s') }}</p>
         {% if app.user %}
-        <button id="like-button" class="btn btn-primary">Like</button>
-        <span id="like-status"></span>
+            <button id="like-button" class="btn btn-primary">Like</button>
+            <span id="like-status"></span>
         {% endif %}
         <hr>
         <h2>Comments</h2>
@@ -43,10 +56,10 @@
             {% endfor %}
         </ul>
         {% if app.user %}
-        {{ form_start(commentForm, { 'attr': { 'id': 'comment-form' } }) }}
-        {{ form_widget(commentForm) }}
-        <button class="btn btn-success mt-2">Add Comment</button>
-        {{ form_end(commentForm) }}
+            {{ form_start(commentForm, { 'attr': { 'id': 'comment-form' } }) }}
+            {{ form_widget(commentForm) }}
+            <button class="btn btn-success mt-2">Add Comment</button>
+            {{ form_end(commentForm) }}
         {% endif %}
     </div>
 

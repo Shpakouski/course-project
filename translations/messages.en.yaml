@@ -10,7 +10,7 @@ theme:
   login: "Login"
   logout: "Logout"
   submit: "Submit"
-  create-ticket: "Ticket"
+  create-ticket: "Create support ticket"
   profile: "Profile"
   summary: "Summary"
   priority: "Priority"
