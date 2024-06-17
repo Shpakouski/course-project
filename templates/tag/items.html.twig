@@ -4,7 +4,6 @@
     <h2>Items tagged with "{{ tag.name }}"</h2>
     <ul class="list-unstyled">
         {% for item in items %}
-            {% dump(item) %}
             <li>
                 <a href="{{ path('app_item_show',{user:item.itemCollection.user.id, collection:item.itemCollection.id,item:item.id}) }}">{{ item.name }}
                 </a></li>
